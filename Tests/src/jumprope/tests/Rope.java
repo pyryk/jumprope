@@ -23,7 +23,7 @@ public class Rope {
 	private static final float SEGMENT_GAP = 0.0f;
 	private PApplet g;
 	private DynamicsWorld world;
-	private List<RigidBody> segments = new ArrayList<>();
+	private List<RigidBody> segments = new ArrayList<RigidBody>();
 	private Point2PointConstraint openEndJoint;
 	private boolean openEndFixed = false;
 	
