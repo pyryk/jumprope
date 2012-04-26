@@ -1,38 +1,36 @@
-package jumprope.tests;
+package jumprope.app;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 import SimpleOpenNI.*;
 import processing.core.PApplet;
-import processing.core.PFont;
 import processing.core.PImage;
 import processing.core.PVector;
 
-@SuppressWarnings("serial")
 public class KinectTracker {
 
 	SimpleOpenNI context;
+	
+	Jumprope app;
 
 	public static boolean KINECT_AVAILABLE = true;
 	//public static boolean KINECT_AVAILABLE = false;
-	
-	private List<Player> players = new ArrayList<Player>(); // TODO move to own class etc
 
-	public KinectTracker(PApplet parent) {
+	public KinectTracker(Jumprope app) {
+		
+		this.app = app;
 
 		if (KINECT_AVAILABLE) {
-			context = new SimpleOpenNI(parent);
+			context = new SimpleOpenNI(app);
 		} else {
 		}
 
 		// enable depthMap generation
 		if (KINECT_AVAILABLE && context.enableDepth() == false) {
 			System.err.println("Can't open the depthMap, maybe the camera is not connected!");
-			parent.exit();
+			app.exit();
 			return;
 		}
 
@@ -48,12 +46,6 @@ public class KinectTracker {
 	public void update() {
 		context.update();
 	}
-
-	public void draw() {
-		for (Player p : players) {
-			drawSkeleton(p.getId());
-		}
-	}
 	
 	public PImage getImage() {
 		if (KINECT_AVAILABLE) {
@@ -68,7 +60,7 @@ public class KinectTracker {
 			// System.out.println("Players: " + this.gameModel.getPlayerCount());
 			List<PVector> allHands = new ArrayList<PVector>();
 			
-			for (Player player : this.players) {
+			for (Player player : this.app.getModel().getPlayers()) {
 				if (KINECT_AVAILABLE
 						&& context.isTrackingSkeleton(player.getId())) {
 					// System.out.println("Drawing skeleton for player " +
@@ -110,7 +102,7 @@ public class KinectTracker {
 		if (successfull) {
 			System.out.println("User calibrated !!!");
 			context.startTrackingSkeleton(userId);
-			this.players.add(new Player(userId));
+			this.app.onPlayerAdded(new Player(userId, this));
 			System.out.println("User added to players.");
 		} else {
 			System.out.println("  Failed to calibrate user !!!");

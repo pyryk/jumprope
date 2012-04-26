@@ -1,13 +1,14 @@
-package jumprope.tests;
+package jumprope.app;
 
 import SimpleOpenNI.SimpleOpenNI;
 import processing.core.PApplet;
 import processing.core.PImage;
 
 @SuppressWarnings("serial")
-public class KinectTrackerTest extends PApplet {
+public class Jumprope extends PApplet {
 	
 	private KinectTracker kinect;
+	private GameModel gameModel;
 	
 	public void setup() {
 
@@ -17,6 +18,7 @@ public class KinectTrackerTest extends PApplet {
 		lights();
 
 		kinect = new KinectTracker(this);
+		gameModel = new GameModel();
 
 		background(200, 0, 0);
 	}
@@ -40,12 +42,22 @@ public class KinectTrackerTest extends PApplet {
 		this.drawCamera(0.5f);
 		
 		// draw player skeletons
-		kinect.draw();
+		gameModel.draw(); // TODO refactor
 	}
 	
 	public static void main(String args[]) {
-		PApplet.main(new String[] { "--present", "jumprope.tests.KinectTrackerTest" });
+		PApplet.main(new String[] { "--present", "jumprope.app.Jumprope" });
 	}
+	
+	
+	public GameModel getModel() {
+		return this.gameModel;
+	}
+	
+	public void onPlayerAdded(Player p) {
+		this.gameModel.addPlayer(p);
+	}
+	
 	
 	// kinect-related events - forwarding calls to kinect class
 	public void onNewUser(int userid) {
