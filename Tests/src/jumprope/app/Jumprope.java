@@ -3,12 +3,15 @@ package jumprope.app;
 import SimpleOpenNI.SimpleOpenNI;
 import processing.core.PApplet;
 import processing.core.PImage;
+import processing.core.PVector;
 
 @SuppressWarnings("serial")
 public class Jumprope extends PApplet {
 	
 	private KinectTracker kinect;
 	private GameModel gameModel;
+	
+	public static final PVector CENTER = new PVector(500,500, 0);
 	
 	public void setup() {
 
@@ -41,8 +44,17 @@ public class Jumprope extends PApplet {
 		
 		this.drawCamera(0.5f);
 		
+		strokeWeight(5);
+		
+		// draw a box to get hunch of the coordinates
+		pushMatrix();
+		System.out.println("Box in (" + CENTER.x + ", " + CENTER.y + ", " + CENTER.z + ")");
+		translate(CENTER.x,CENTER.y,CENTER.z);
+		box(50);
+		popMatrix();
+		
 		// draw player skeletons
-		gameModel.draw(); // TODO refactor
+		gameModel.draw(this); // TODO refactor
 	}
 	
 	public static void main(String args[]) {

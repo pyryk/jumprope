@@ -13,6 +13,9 @@ public class KinectTracker {
 
 	SimpleOpenNI context;
 	
+	// unsatisfiedlinkerror if this is final & inited here. dont know why
+	public static int[] PARTS_USED;
+	
 	Jumprope app;
 
 	public static boolean KINECT_AVAILABLE = true;
@@ -25,7 +28,31 @@ public class KinectTracker {
 		if (KINECT_AVAILABLE) {
 			context = new SimpleOpenNI(app);
 		} else {
+			System.out.println("Kinect not available!");
 		}
+		
+		PARTS_USED = new int[] {
+				SimpleOpenNI.SKEL_HEAD,
+				SimpleOpenNI.SKEL_NECK,
+
+				SimpleOpenNI.SKEL_LEFT_SHOULDER,
+				SimpleOpenNI.SKEL_LEFT_ELBOW,
+				SimpleOpenNI.SKEL_LEFT_HAND,
+
+				SimpleOpenNI.SKEL_RIGHT_SHOULDER,
+				SimpleOpenNI.SKEL_RIGHT_ELBOW,
+				SimpleOpenNI.SKEL_RIGHT_HAND,
+
+				SimpleOpenNI.SKEL_TORSO,
+
+				SimpleOpenNI.SKEL_LEFT_HIP,
+				SimpleOpenNI.SKEL_LEFT_KNEE,
+				SimpleOpenNI.SKEL_LEFT_FOOT,
+
+				SimpleOpenNI.SKEL_RIGHT_HIP,
+				SimpleOpenNI.SKEL_RIGHT_KNEE,
+				SimpleOpenNI.SKEL_RIGHT_FOOT
+			};
 
 		// enable depthMap generation
 		if (KINECT_AVAILABLE && context.enableDepth() == false) {
@@ -45,6 +72,7 @@ public class KinectTracker {
 	
 	public void update() {
 		context.update();
+		this.updatePlayers();
 	}
 	
 	public PImage getImage() {
@@ -55,30 +83,46 @@ public class KinectTracker {
 		}
 	}
 
+	/**
+	 * Updates player positions
+	 */
 	public void updatePlayers() {
-			// draw skeletons
-			// System.out.println("Players: " + this.gameModel.getPlayerCount());
-			List<PVector> allHands = new ArrayList<PVector>();
-			
 			for (Player player : this.app.getModel().getPlayers()) {
 				if (KINECT_AVAILABLE
 						&& context.isTrackingSkeleton(player.getId())) {
-					// System.out.println("Drawing skeleton for player " +
-					// player.getId());
-					drawSkeleton(player.getId());
 					
-					PVector leftHand = new PVector();
-					PVector rightHand = new PVector();
-					context.getJointPositionSkeleton(player.getId(), SimpleOpenNI.SKEL_LEFT_HAND,
-							leftHand);
-					context.getJointPositionSkeleton(player.getId(), SimpleOpenNI.SKEL_RIGHT_HAND,
-							rightHand);
-					
+					for (int part : PARTS_USED) {
+						/*XnSkeletonJointPosition joint1Pos = new XnSkeletonJointPosition();
+		                
+		                context.getJointPositionSkeleton(player.getId(), part, joint1Pos);
 
+		                if (joint1Pos.getFConfidence() < 0.5)
+		                        return;
+		                        
+		                // calc the 3d coordinate to screen coordinates
+		                XnVector3D pt1 = new XnVector3D();
+		                context.convertRealWorldToProjective(joint1Pos.getPosition(), pt1);
+		                
+						PVector pos = new PVector(pt1.getX(), pt1.getY(), pt1.getZ());*/
+						
+						PVector pos = new PVector();
+						context.getJointPositionSkeleton(player.getId(), part, pos);
+						
+						player.setPartPosition(part, realWorldToGamePosition(pos));			
+					}
 				} else if (KINECT_AVAILABLE) {
 					System.out.println("Not tracking skeleton for player ");
 				}
 			}
+	}
+	
+	private PVector realWorldToGamePosition(PVector world) {
+		// TODO 
+		PVector game = new PVector();
+		game.x = world.x + 300;
+		game.y = -world.y + 300;
+		game.z -= world.y + 700;
+		return game;
 	}
 
 	public void onNewUser(int userid) {
@@ -102,7 +146,7 @@ public class KinectTracker {
 		if (successfull) {
 			System.out.println("User calibrated !!!");
 			context.startTrackingSkeleton(userId);
-			this.app.onPlayerAdded(new Player(userId, this));
+			this.app.onPlayerAdded(new Player(userId));
 			System.out.println("User added to players.");
 		} else {
 			System.out.println("  Failed to calibrate user !!!");

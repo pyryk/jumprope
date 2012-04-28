@@ -3,6 +3,8 @@ package jumprope.app;
 import java.util.ArrayList;
 import java.util.List;
 
+import processing.core.PApplet;
+
 public class GameModel {
 
 	private List<Player> players = new ArrayList<Player>();
@@ -15,9 +17,18 @@ public class GameModel {
 		this.players.add(p);
 	}
 	
-	public void draw() {
+	public Player getPlayer(int id) {
 		for (Player p : players) {
-			p.drawSkeleton();
+			if (p.getId() == id) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	public void draw(PApplet app) {
+		for (Player p : players) {
+			p.drawSkeleton(app);
 		}
 	}
 }
