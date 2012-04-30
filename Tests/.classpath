@@ -3,7 +3,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="/Libraries/lib/core.jar" sourcepath="/Libraries/libsrc/core-src.zip"/>
 	<classpathentry kind="lib" path="/Libraries/lib/jbullet.jar" sourcepath="/Libraries/libsrc/jbullet-src.zip"/>
-	<classpathentry kind="lib" path="/Libraries/lib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/gluegen-rt.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Libraries/nativelib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/Libraries/lib/jogl.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Libraries/nativelib"/>
@@ -17,5 +21,14 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Libraries/nativelib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Libraries/lib/bluecove-2.1.0.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/bluecove-gpl-2.1.0.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/l4p5.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/libTUIO.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/oscP5.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/TUIO.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/WiiRemoteJ-1.6.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/wrj4P5.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/Loc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

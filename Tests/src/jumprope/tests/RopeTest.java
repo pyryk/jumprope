@@ -2,6 +2,10 @@ package jumprope.tests;
 
 import javax.vecmath.*;
 
+import netP5.NetAddress;
+import oscP5.OscMessage;
+import oscP5.OscP5;
+
 import processing.core.*;
 
 import com.bulletphysics.collision.broadphase.*;
@@ -31,6 +35,17 @@ public class RopeTest extends PApplet {
 	Vector3f worldAabbMin = new Vector3f(-10000, -10000, -10000);
 	Vector3f worldAabbMax = new Vector3f(10000, 10000, 10000);
 	DynamicsWorld world;
+	
+	OscP5 osc;
+	NetAddress addr;
+	static final String serverIP = "127.0.0.1";
+	static final int serverPort = 50000;
+	static final String clientIP = "127.0.0.1";
+	static final int clientPort = 50001;
+	//static final float wiimoteWidth = 512;
+	//static final float wiimoteHeight = 384;
+	static final float wiimoteWidth = 1024;
+	static final float wiimoteHeight = 768;
 
 	public static void main(String args[]) {
 		PApplet.main(new String[] { "jumprope.tests.RopeTest" });
@@ -75,6 +90,8 @@ public class RopeTest extends PApplet {
 		rope = new Rope(this, world);
 		
 //		RagDoll ragDoll = new RagDoll(world, new Vector3f(0f, 0f, 10f), 5f);
+		osc = new OscP5(this, clientPort);
+		addr = new NetAddress(serverIP, serverPort);
 	}
 
 	private RigidBody addCollisionSphere(Vector3f position) {
@@ -125,6 +142,23 @@ public class RopeTest extends PApplet {
 
 	private Vector3f mousePosToWorldPos() {
 		return new Vector3f(mouseX-width*0.5f, -mouseY+width*0.5f, -300);
+	}
+	
+	private void oscEvent(OscMessage msg) {
+		if (msg.checkAddrPattern("/wiimote") && msg.checkTypetag("ff")) {
+			float x = msg.get(0).floatValue();
+			float y = msg.get(1).floatValue();
+			x = (x - 0.5f) * wiimoteWidth;
+			y = (y - 0.5f) * wiimoteHeight;
+			rope.setPosition(new Vector3f(-x, -y, -300));
+		}
+	}
+	
+	// vibrates wiimote for millis milliseconds
+	private void vibrateWiimote(int millis) {
+		OscMessage msg = new OscMessage("/jumprope");
+		msg.add(millis);
+		osc.send(msg, addr);
 	}
 	
 	private void drawSphere(RigidBody body) {
