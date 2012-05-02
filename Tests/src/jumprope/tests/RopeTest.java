@@ -2,6 +2,9 @@ package jumprope.tests;
 
 import javax.vecmath.*;
 
+import lll.Loc.Loc;
+import lll.wrj4P5.Wrj4P5;
+
 import netP5.NetAddress;
 import oscP5.OscMessage;
 import oscP5.OscP5;
@@ -46,6 +49,8 @@ public class RopeTest extends PApplet {
 	//static final float wiimoteHeight = 384;
 	static final float wiimoteWidth = 1024;
 	static final float wiimoteHeight = 768;
+	
+	Wrj4P5 wii;
 
 	public static void main(String args[]) {
 		PApplet.main(new String[] { "jumprope.tests.RopeTest" });
@@ -92,6 +97,8 @@ public class RopeTest extends PApplet {
 //		RagDoll ragDoll = new RagDoll(world, new Vector3f(0f, 0f, 10f), 5f);
 		osc = new OscP5(this, clientPort);
 		addr = new NetAddress(serverIP, serverPort);
+		wii = new Wrj4P5(this);
+		wii.connect(Wrj4P5.IR);
 	}
 
 	private RigidBody addCollisionSphere(Vector3f position) {
@@ -137,7 +144,18 @@ public class RopeTest extends PApplet {
 	
 	private void update() {
 		if (mousePressed) rope.setPosition(mousePosToWorldPos());
-		else rope.clearPosition();
+		//else rope.clearPosition();
+		if (wii.rCount >= 1) {
+			Loc p = wii.rimokon.irLights[0];
+			if (p.x > 0 && p.y > 0 && p.z > 0) {
+				float x = p.x;
+				float y = p.y;
+				//sendMsg();
+				x = (x - 0.5f) * wiimoteWidth;
+				y = (y - 0.5f) * wiimoteHeight;
+				rope.setPosition(new Vector3f(-x, -y, -300));
+			}
+		}		
 	}
 
 	private Vector3f mousePosToWorldPos() {

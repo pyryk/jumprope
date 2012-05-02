@@ -21,7 +21,11 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Libraries/nativelib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Libraries/lib/bluecove-2.1.0.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/bluecove-2.1.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Libraries/nativelib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/Libraries/lib/bluecove-gpl-2.1.0.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/l4p5.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/libTUIO.jar"/>
