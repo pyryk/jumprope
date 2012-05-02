@@ -77,8 +77,9 @@ public class Player {
 		feetMidPos.y = pFeetMidPos.y;
 		feetMidPos.z = pFeetMidPos.z;
 		
-		float headY = pHeadPos.y;
-		float height = headY - feetMidPos.y;
+		//float headY = pHeadPos.y;
+		float height = PVector.sub(pHeadPos, pFeetMidPos).mag(); //
+		//float height = headY - feetMidPos.y;
 		
 		setBoundingBoxBounds(height, headPos, feetMidPos);
 	}
@@ -113,27 +114,28 @@ public class Player {
 	private static final float PLAYER_THICKNESS = 40f;
 	
 	private void addCollisionShape(Vector3f position) {
-		height = 300;
+		height = 350; // 300
 		CollisionShape fallShape = new BoxShape(new Vector3f(PLAYER_THICKNESS*0.5f, height*0.5f, PLAYER_THICKNESS*0.5f));
 		Transform tf = new Transform();
 		tf.origin.set(position);
 		tf.setRotation(new Quat4f(0, 0, 0, 1));
 		DefaultMotionState fallMotionState = new DefaultMotionState(tf);
-		float myFallMass = 1;
+		float mass = 1;
 		Vector3f myFallInertia = new Vector3f(0, 0, 0);
-		fallShape.calculateLocalInertia(myFallMass, myFallInertia);
-		RigidBodyConstructionInfo fallRigidBodyCI = new RigidBodyConstructionInfo(myFallMass,
+		fallShape.calculateLocalInertia(mass, myFallInertia);
+		RigidBodyConstructionInfo fallRigidBodyCI = new RigidBodyConstructionInfo(mass,
 			fallMotionState, fallShape, myFallInertia);
 		RigidBody body = new RigidBody(fallRigidBodyCI);
 		body.setActivationState(RigidBody.DISABLE_DEACTIVATION);
+		body.setDamping(0.0f, 1.0f);
 		world.addRigidBody(body);
 		this.body = body;
 		
-		headJoint = new Point2PointConstraint(body, new Vector3f(0.0f, height*0.5f, 0.0f));
-		world.addConstraint(headJoint);
-		
 		feetJoint = new Point2PointConstraint(body, new Vector3f(0.0f, -height*0.5f, 0.0f));
 		world.addConstraint(feetJoint);
+		
+		headJoint = new Point2PointConstraint(body, new Vector3f(0.0f, height*0.5f, 0.0f));
+		world.addConstraint(headJoint);
 	}
 	
 	private void drawBox(RigidBody body, PApplet g) {
@@ -169,6 +171,8 @@ public class Player {
 		
 		//Vector3f headPos = new Vector3f(pos);
 		//headPos.y += height*0.5f;
+		//headJoint.setPivotA(new Vector3f(0.0f, height*0.5f, 0.0f));
+		//feetJoint.setPivotA(new Vector3f(0.0f, -height*0.5f, 0.0f));
 		headJoint.setPivotB(headPos);
 		feetJoint.setPivotB(feetPos);
 	}
