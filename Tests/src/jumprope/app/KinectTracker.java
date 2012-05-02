@@ -64,7 +64,7 @@ public class KinectTracker {
 		if (KINECT_AVAILABLE) {
 			context.setMirror(true);
 			// enable camera image generation
-			context.enableRGB();
+			//context.enableRGB();
 			// enable skeletons
 			context.enableUser(SimpleOpenNI.SKEL_PROFILE_ALL);
 		}
@@ -116,12 +116,13 @@ public class KinectTracker {
 			}
 	}
 	
+	private static final float COORD_SCALE = 0.3f;
 	private PVector realWorldToGamePosition(PVector world) {
 		// TODO 
 		PVector game = new PVector();
-		game.x = world.x + 300;
-		game.y = -world.y + 300;
-		game.z -= world.y + 700;
+		game.z = COORD_SCALE*world.x; //+ 300;
+		game.y = COORD_SCALE*world.y; //+ 300;
+		game.x = COORD_SCALE*(world.z-2500);//-world.z - 500; //+ 700;
 		return game;
 	}
 
@@ -132,7 +133,7 @@ public class KinectTracker {
 
 	public void onLostUser(int userid) {
 		System.out.println("Lost user " + userid);
-		//this.gameModel.removePlayer(userid);
+		this.app.onPlayerLost(userid);
 	}
 
 	public void onStartCalibration(int userId) {

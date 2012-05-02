@@ -25,11 +25,6 @@ public class RopeTest extends PApplet {
 	public static Vector4f plane = new Vector4f(0.0f, 1.0f, 0.0f, GROUND_H);
 	public static Vector4f light = new Vector4f(0.0f, 300.0f, -100.0f, 0);
 	
-	CollisionDispatcher collisionDispatcher;
-	BroadphaseInterface broadphaseInterface;
-	ConstraintSolver constraintSolver;
-	CollisionConfiguration collisionConf;
-
 	RigidBody groundRigidBody;
 	private RigidBody sphereBody1;
 	private RigidBody sphereBody2;
@@ -69,10 +64,10 @@ public class RopeTest extends PApplet {
 //		strokeWeight(3);
 		smooth();
 
-		collisionConf = new DefaultCollisionConfiguration();
-		broadphaseInterface = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
-		collisionDispatcher = new CollisionDispatcher(collisionConf);
-		constraintSolver = new SequentialImpulseConstraintSolver();
+		CollisionConfiguration collisionConf = new DefaultCollisionConfiguration();
+		BroadphaseInterface broadphaseInterface = new AxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
+		CollisionDispatcher collisionDispatcher = new CollisionDispatcher(collisionConf);
+		ConstraintSolver constraintSolver = new SequentialImpulseConstraintSolver();
 
 		world = new DiscreteDynamicsWorld(collisionDispatcher, broadphaseInterface,
 			constraintSolver, collisionConf);

@@ -17,6 +17,10 @@ public class GameModel {
 		this.players.add(p);
 	}
 	
+	public void removePlayer(int id) {
+		this.players.remove(this.getPlayer(id));
+	}
+	
 	public Player getPlayer(int id) {
 		for (Player p : players) {
 			if (p.getId() == id) {
