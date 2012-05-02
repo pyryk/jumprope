@@ -177,4 +177,12 @@ public class Rope {
 		g.sphere(10);
 		g.popMatrix();
 	}
+	
+	public Vector3f getCenterPosition() {
+		RigidBody centerSegment = segments.get((segments.size()-1)/2);
+		Transform tf = new Transform();
+		tf = centerSegment.getMotionState().getWorldTransform(tf);
+		return tf.origin;
+
+	}
 }

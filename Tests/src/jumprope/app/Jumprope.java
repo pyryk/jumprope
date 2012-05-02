@@ -1,5 +1,7 @@
 package jumprope.app;
 
+import java.awt.Font;
+
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
@@ -121,6 +123,7 @@ public class Jumprope extends PApplet {
 		world.stepSimulation(1.0f / 60.0f, 8);
 		kinect.update();
 		updateRope();
+		gameModel.updatePoints(rope);
 	}
 	
 	public void updateRope() {
@@ -153,9 +156,20 @@ public class Jumprope extends PApplet {
 		
 		drawDebugBox();
 		drawSphere(new Vector3f(0,0,0));
-		
 		// draw player skeletons
 		gameModel.draw(this); // TODO refactor
+		
+		drawPoints();
+	}
+
+	private void drawPoints() {
+		pushMatrix();
+		scale(1f, -1f, 1f);
+		textSize(32f);
+		textAlign(PApplet.CENTER);
+		text(gameModel.getPoints() + " points", 0, -400, 0);
+		popMatrix();
+		
 	}
 
 	private void setLightsAndColors() {
