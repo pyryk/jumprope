@@ -172,7 +172,7 @@ public class Jumprope extends PApplet {
 					if (pt.getDistance() < 0.0f) {
 						gameModel.resetPoints();
 						if (millis() > lastVibrateTime+500) {
-							wii.rimokon.vibrateFor(200);
+							wii.rimokon.vibrateFor(100);
 							lastVibrateTime = millis();
 						}
 						//System.out.printf("collision between %s and %s\n", obA, obB);
