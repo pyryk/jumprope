@@ -33,6 +33,10 @@ public class GameModel {
 		return this.points;
 	}
 	
+	public void resetPoints() {
+		this.points = 0;
+	}
+	
 	public void addPoint() {
 		this.points++;
 	}

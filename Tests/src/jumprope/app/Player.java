@@ -128,6 +128,7 @@ public class Player {
 		RigidBody body = new RigidBody(fallRigidBodyCI);
 		body.setActivationState(RigidBody.DISABLE_DEACTIVATION);
 		body.setDamping(0.0f, 1.0f);
+		body.setUserPointer(this);
 		world.addRigidBody(body);
 		this.body = body;
 		

@@ -121,6 +121,7 @@ public class Rope {
 		RigidBodyConstructionInfo fallRigidBodyCI = new RigidBodyConstructionInfo(mass,
 			fallMotionState, shape, fallInertia);
 		RigidBody body = new RigidBody(fallRigidBodyCI);
+		body.setUserPointer(this);
 //		body.setRestitution(1.0f);
 		body.setDamping(0.5f, 0.5f);
 		body.setInvInertiaDiagLocal(new Vector3f(0.01f,0.01f,0.01f));

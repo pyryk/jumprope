@@ -16,7 +16,10 @@ import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
+import com.bulletphysics.collision.narrowphase.ManifoldPoint;
+import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.collision.shapes.StaticPlaneShape;
@@ -115,6 +118,7 @@ public class Jumprope extends PApplet {
 		world = new DiscreteDynamicsWorld(collisionDispatcher, broadphaseInterface,
 			constraintSolver, collisionConf);
 		world.setGravity(new Vector3f(0, -1000, 0));
+
 	}
 	
 	private void drawCamera(float scale) {
@@ -144,11 +148,39 @@ public class Jumprope extends PApplet {
 		return body;
 	}
 	
+	private int lastVibrateTime;
+	
 	public void update() {
 		world.stepSimulation(1.0f / 60.0f, 8);
 		kinect.update();
 		updateRope();
 		gameModel.update();
+		
+		int numManifolds = world.getDispatcher().getNumManifolds();
+		for (int i = 0; i < numManifolds; i++) {
+			PersistentManifold contactManifold = world.getDispatcher().getManifoldByIndexInternal(i);
+			CollisionObject obA = (CollisionObject) contactManifold.getBody0();
+			CollisionObject obB = (CollisionObject) contactManifold.getBody1();
+			
+			if ((obA.getUserPointer() instanceof Rope && obB.getUserPointer() instanceof Player)
+					|| (obA.getUserPointer() instanceof Player && obB
+							.getUserPointer() instanceof Rope)) {
+				
+				int numContacts = contactManifold.getNumContacts();
+				for (int j = 0; j < numContacts; j++) {
+					ManifoldPoint pt = contactManifold.getContactPoint(j);
+					if (pt.getDistance() < 0.0f) {
+						gameModel.resetPoints();
+						if (millis() > lastVibrateTime+500) {
+							wii.rimokon.vibrateFor(200);
+							lastVibrateTime = millis();
+						}
+						//System.out.printf("collision between %s and %s\n", obA, obB);
+						
+					}
+				}
+			}
+		}
 	}
 	
 	public void updateRope() {
