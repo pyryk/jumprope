@@ -100,7 +100,7 @@ public class Player {
 				app.line(start.x, start.y, start.z, end.x, end.y, end.z);
 				if (l.getEndPart() == SimpleOpenNI.SKEL_LEFT_FOOT) {
 					//System.out.println("Limb between (" + start.x + "," + start.y + "," + start.z + ") and (" + end.x + "," + end.y + "," + end.z + ")");
-					System.out.println("Distance between left foot and ground: " + (l.getEndPosition().y - Jumprope.GROUND_H));
+					//System.out.println("Distance between left foot and ground: " + (l.getEndPosition().y - Jumprope.GROUND_H));
 				}
 				
 			} else {
