@@ -64,7 +64,7 @@ public class Rope {
 	private void addRope() {
 		RigidBody previousSegment = null;
 		for (int i = 0; i < SEGMENTS_COUNT; i++) {
-			float x = i * SEGMENT_WIDTH;
+			float x = -400f + i * SEGMENT_WIDTH;
 			RigidBody segment = addRopeSegment(new Vector3f(x, 0.0f, 0.0f));
 			segments.add(segment);
 			if (i == 0) hookFirstRopeSegment(segment);

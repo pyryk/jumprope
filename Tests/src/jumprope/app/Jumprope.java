@@ -136,7 +136,8 @@ public class Jumprope extends PApplet {
 				//sendMsg();
 				x = (x - 0.5f) * wiimoteWidth;
 				y = (y - 0.5f) * wiimoteHeight;
-				rope.setPosition(new Vector3f(-x, -y, -300));
+				//rope.setPosition(new Vector3f(-x, -y, -300));
+				rope.setPosition(new Vector3f(400, -y, -x));
 			}
 		}
 	}
@@ -198,7 +199,7 @@ public class Jumprope extends PApplet {
 	}
 	
 	private Vector3f mousePosToWorldPos() {
-		return new Vector3f(mouseX-width*0.5f, -mouseY+width*0.5f, -300);
+		return new Vector3f(400, -mouseY+height*0.5f, mouseX-width*0.5f);
 	}
 	
 	public static void main(String args[]) {

@@ -95,19 +95,6 @@ public class KinectTracker {
 					calibrateYOffset(player);
 					
 					for (int part : PARTS_USED) {
-						/*XnSkeletonJointPosition joint1Pos = new XnSkeletonJointPosition();
-		                
-		                context.getJointPositionSkeleton(player.getId(), part, joint1Pos);
-
-		                if (joint1Pos.getFConfidence() < 0.5)
-		                        return;
-		                        
-		                // calc the 3d coordinate to screen coordinates
-		                XnVector3D pt1 = new XnVector3D();
-		                context.convertRealWorldToProjective(joint1Pos.getPosition(), pt1);
-		                
-						PVector pos = new PVector(pt1.getX(), pt1.getY(), pt1.getZ());*/
-						
 						PVector pos = new PVector();
 						context.getJointPositionSkeleton(player.getId(), part, pos);
 						
