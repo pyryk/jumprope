@@ -136,7 +136,7 @@ public class KinectTracker {
 		if (successfull) {
 			System.out.println("User calibrated !!!");
 			context.startTrackingSkeleton(userId);
-			Player player = new Player(userId);
+			Player player = new Player(userId, app.world);
 			this.app.onPlayerAdded(player);
 			System.out.println("User added to players.");
 			

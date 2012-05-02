@@ -15,10 +15,15 @@ public class GameModel {
 	public static int DOWN_HEIGHT = -300;
 
 	private List<Player> players = new ArrayList<Player>();
+	private Rope rope;
 	
 	private boolean beenUp = false;
 	
 	private int points;
+	
+	public GameModel(Rope rope) {
+		this.rope = rope;
+	}
 	
 	public List<Player> getPlayers() {
 		return players;
@@ -49,7 +54,18 @@ public class GameModel {
 		return null;
 	}
 	
-	public void updatePoints(Rope rope) {
+	public void update() {
+		updatePoints();
+		updatePlayers();
+	}
+	
+	private void updatePlayers() {
+		for (Player p : players) {
+			p.update();
+		}
+	}
+
+	public void updatePoints() {
 		Vector3f centerPos = rope.getCenterPosition();
 		
 		if (beenUp && centerPos.y <= DOWN_HEIGHT) {
@@ -64,7 +80,7 @@ public class GameModel {
 	
 	public void draw(PApplet app) {
 		for (Player p : players) {
-			p.drawSkeleton(app);
+			p.draw(app);
 		}
 	}
 }

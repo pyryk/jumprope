@@ -6,6 +6,7 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
+import jumprope.tests.MatrixUtils;
 import jumprope.tests.Rope;
 
 import lll.Loc.Loc;
@@ -17,6 +18,7 @@ import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.DynamicsWorld;
@@ -30,6 +32,8 @@ import com.bulletphysics.linearmath.Transform;
 import SimpleOpenNI.SimpleOpenNI;
 import processing.core.PApplet;
 import processing.core.PImage;
+import processing.core.PMatrix;
+import processing.core.PMatrix3D;
 import processing.core.PVector;
 
 @SuppressWarnings("serial")
@@ -46,10 +50,12 @@ public class Jumprope extends PApplet {
 	private int maxProxies = 1024;
 	private Vector3f worldAabbMin = new Vector3f(-10000, -10000, -10000);
 	private Vector3f worldAabbMax = new Vector3f(10000, 10000, 10000);
-	private DynamicsWorld world;
+	public DynamicsWorld world;
 	
 	static final float wiimoteWidth = 1024;
 	static final float wiimoteHeight = 768;
+	
+	private RigidBody sphereBody1;
 	
 	Wrj4P5 wii;
 	
@@ -68,14 +74,17 @@ public class Jumprope extends PApplet {
 			background(200, 0, 0);
 		
 		kinect = new KinectTracker(this);
-		gameModel = new GameModel();
+		
 
 		background(200, 0, 0);
 		
 		addWorld();
 		addGround();
 		
+		sphereBody1 = addCollisionSphere(new Vector3f(0, 500, 0));
+		
 		rope = new Rope(this, world);
+		gameModel = new GameModel(rope);
 		
 		setupWiimote();
 	}
@@ -119,11 +128,27 @@ public class Jumprope extends PApplet {
 		popMatrix();
 	}
 	
+	private RigidBody addCollisionSphere(Vector3f position) {
+		CollisionShape fallShape = new SphereShape(50);
+		Transform tf = new Transform();
+		tf.origin.set(position);
+		tf.setRotation(new Quat4f(0, 0, 0, 1));
+		DefaultMotionState fallMotionState = new DefaultMotionState(tf);
+		float myFallMass = 1;
+		Vector3f myFallInertia = new Vector3f(0, 0, 0);
+		fallShape.calculateLocalInertia(myFallMass, myFallInertia);
+		RigidBodyConstructionInfo fallRigidBodyCI = new RigidBodyConstructionInfo(myFallMass,
+			fallMotionState, fallShape, myFallInertia);
+		RigidBody body = new RigidBody(fallRigidBodyCI);
+		world.addRigidBody(body);
+		return body;
+	}
+	
 	public void update() {
 		world.stepSimulation(1.0f / 60.0f, 8);
 		kinect.update();
 		updateRope();
-		gameModel.updatePoints(rope);
+		gameModel.update();
 	}
 	
 	public void updateRope() {
@@ -160,6 +185,26 @@ public class Jumprope extends PApplet {
 		gameModel.draw(this); // TODO refactor
 		
 		drawPoints();
+		
+		drawSphere(sphereBody1);
+	}
+	
+	private void drawSphere(RigidBody body) {
+		Transform tf = new Transform();
+		tf = body.getMotionState().getWorldTransform(tf);
+
+		pushMatrix();
+		translate(tf.origin.x, tf.origin.y, tf.origin.z);
+		PMatrix trans = getMatrix();
+		Quat4f rotQuat = new Quat4f();
+		tf.getRotation(rotQuat);
+		PMatrix3D rotMatrix = new PMatrix3D();
+		MatrixUtils.setRotation(rotMatrix, rotQuat);
+		trans.apply(rotMatrix);
+		setMatrix(trans);
+		sphereDetail(30);
+		sphere(50);
+		popMatrix();
 	}
 
 	private void drawPoints() {
