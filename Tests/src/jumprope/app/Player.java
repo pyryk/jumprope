@@ -39,7 +39,11 @@ public class Player {
 				app.strokeWeight(4);
 				app.stroke(0);
 				app.line(start.x, start.y, start.z, end.x, end.y, end.z);
-				System.out.println("Limb between (" + start.x + "," + start.y + "," + start.z + ") and (" + end.x + "," + end.y + "," + end.z + ")");
+				if (l.getEndPart() == SimpleOpenNI.SKEL_LEFT_FOOT) {
+					//System.out.println("Limb between (" + start.x + "," + start.y + "," + start.z + ") and (" + end.x + "," + end.y + "," + end.z + ")");
+					System.out.println("Distance between left foot and ground: " + (l.getEndPosition().y - Jumprope.GROUND_H));
+				}
+				
 			} else {
 				System.out.println("Limb positions for player " + this.getId()
 						+ " have not yet been initialized");

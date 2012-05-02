@@ -17,6 +17,7 @@ public class KinectTracker {
 	public static int[] PARTS_USED;
 	
 	Jumprope app;
+	private float yOffset;
 
 	public static boolean KINECT_AVAILABLE = true;
 	//public static boolean KINECT_AVAILABLE = false;
@@ -91,6 +92,8 @@ public class KinectTracker {
 				if (KINECT_AVAILABLE
 						&& context.isTrackingSkeleton(player.getId())) {
 					
+					calibrateYOffset(player);
+					
 					for (int part : PARTS_USED) {
 						/*XnSkeletonJointPosition joint1Pos = new XnSkeletonJointPosition();
 		                
@@ -118,11 +121,10 @@ public class KinectTracker {
 	
 	private static final float COORD_SCALE = 0.3f;
 	private PVector realWorldToGamePosition(PVector world) {
-		// TODO 
 		PVector game = new PVector();
-		game.z = COORD_SCALE*world.x; //+ 300;
-		game.y = COORD_SCALE*world.y; //+ 300;
-		game.x = COORD_SCALE*(world.z-2500);//-world.z - 500; //+ 700;
+		game.x = COORD_SCALE*world.x; //+ 300;
+		game.y = COORD_SCALE*(world.y-yOffset) + Jumprope.GROUND_H; //+ 300;
+		game.z = COORD_SCALE*(world.z-2500);//-world.z - 500; //+ 700;
 		return game;
 	}
 
@@ -147,13 +149,28 @@ public class KinectTracker {
 		if (successfull) {
 			System.out.println("User calibrated !!!");
 			context.startTrackingSkeleton(userId);
-			this.app.onPlayerAdded(new Player(userId));
+			Player player = new Player(userId);
+			this.app.onPlayerAdded(player);
 			System.out.println("User added to players.");
+			
+			calibrateYOffset(player);
 		} else {
 			System.out.println("  Failed to calibrate user !!!");
 			System.out.println("  Start pose detection");
 			context.startPoseDetection("Psi", userId);
 		}
+	}
+
+	private boolean yOffsetCalibrated = false;
+	private void calibrateYOffset(Player player) {
+		PVector pos = new PVector();
+		context.getJointPositionSkeleton(player.getId(), SimpleOpenNI.SKEL_LEFT_FOOT, pos);
+		if (!yOffsetCalibrated && pos.x != 0 && pos.y != 0 && pos.z != 0) {
+			System.out.println("Calibrating the Y offset: " + pos.y);
+			yOffset = pos.y;
+			yOffsetCalibrated = true;
+		}
+		
 	}
 
 	public void onStartPose(String pose, int userId) {
